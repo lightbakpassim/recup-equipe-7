@@ -6,6 +6,8 @@ Tableau campus pour **objets trouvés, objets perdus, et prêts** entre étudian
 
 ## Ouvrir le prototype
 
+Dépôt : [github.com/lightbakpassim/recup-equipe-7](https://github.com/lightbakpassim/recup-equipe-7)
+
 Double-cliquer `prototype/index.html`  
 **ou** dans ce dossier :
 

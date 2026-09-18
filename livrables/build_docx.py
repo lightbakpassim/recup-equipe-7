@@ -274,10 +274,10 @@ for name, caption in SHOTS:
 heading(doc, "F. Liens complémentaires")
 links = [
     "Prototype (fichier local) : prototype/index.html",
-    "Présentation PowerPoint : livrables/Recup-presentation.pptx",
+    "Présentation PowerPoint : livrables/Recup-presentation-EQUIPE_7.pptx",
     "Présentation HTML (flèches clavier) : livrables/presentation.html",
-    "Lien de démonstration en ligne : à coller ici si vous hébergez le proto (GitHub Pages, Netlify…)",
-    "Dépôt GitHub : à coller ici si disponible",
+    "Dépôt GitHub : https://github.com/lightbakpassim/recup-equipe-7",
+    "Démo Netlify : à coller après le déploiement (Import from Git → ce dépôt)",
 ]
 for item in links:
     p = doc.add_paragraph(style="List Bullet")
