@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Récup’ — Document explicatif</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#171310; --paper:#f7f1e6; --brick:#c43c28; --card:#fffaf2; --muted:#5e564d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #e8dfcf; color: var(--ink); font-family: Outfit, sans-serif; line-height: 1.55; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    header { margin-bottom: 36px; }
+    .kicker { color: var(--brick); letter-spacing: .14em; text-transform: uppercase; font-size: 12px; font-weight: 700; }
+    h1, h2 { font-family: Fraunces, Georgia, serif; line-height: 1.15; }
+    h1 { font-size: 56px; margin: 8px 0 12px; }
+    h2 { font-size: 28px; margin: 40px 0 12px; }
+    p, li { font-size: 16.5px; }
+    .lead { font-size: 20px; max-width: 34ch; }
+    .meta { color: var(--muted); }
+    .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0 8px; }
+    figure { margin: 0; background: var(--card); border-radius: 18px; padding: 12px; }
+    figure.wide { grid-column: 1 / -1; }
+    img { width: 100%; border-radius: 12px; display: block; }
+    figcaption { font-size: 13px; color: var(--muted); padding: 10px 6px 4px; }
+    a { color: var(--brick); }
+    .box { background: var(--card); border-radius: 16px; padding: 16px 18px; }
+    ul { padding-left: 18px; }
+    @media print {
+      body { background: white; }
+      .wrap { padding: 0; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="kicker">ESIG Tech Arena 2026 · Mini-challenge de présélection</p>
+      <h1>Récup’</h1>
+      <p class="lead">Le tableau du campus pour retrouver ce que tu as perdu, et emprunter ce qu’il te manque.</p>
+      <p class="meta">EQUIPE_7<br />BAKPASSIM Pouwedeo Light · ABOLO-SEWOVI Ami Raphaëlla · KOUYAKOUTOULI Godwin Marc<br />Prototype web cliquable · 17 septembre 2026</p>
+    </header>
+
+    <h2>A. Présentation du problème</h2>
+    <p><strong>Quel est le problème identifié ?</strong> Sur un campus, les objets bougent en continu : badges, chargeurs, calculatrices, écouteurs, clés USB, vestes. Quand un étudiant perd quelque chose, il n’a pas de lieu unique pour le signaler. Il écrit dans un groupe WhatsApp, demande autour de lui, passe parfois à l’accueil… et souvent il abandonne.</p>
+    <p>Celui qui <strong>trouve</strong> un objet est tout aussi bloqué : il ne sait pas à qui le rendre. L’objet finit dans un sac, un tiroir, ou à l’accueil sans que le propriétaire ne le sache. Le même chaos existe pour les <strong>prêts</strong> : avant un examen, on cherche une calculatrice dans la précipitation, sans savoir qui peut dépanner.</p>
+    <p><strong>À qui ce problème se pose-t-il ?</strong> Aux étudiants au quotidien, surtout entre deux cours, à la BU, à la cafet, en amphi, et juste avant un partiel. L’accueil / la scolarité est concernée de façon secondaire : elle reçoit des objets sans canal simple pour les relier à leurs propriétaires.</p>
+    <p><strong>Pourquoi ce problème mérite-t-il une solution ?</strong> Parce qu’il est fréquent, concret, et coûteux. Un badge à refaire, une calculatrice rachetée, des dizaines de minutes perdues à scroller un groupe, un stress inutile avant un examen. Les outils existants (WhatsApp, affichage papier, accueil) ne sont pas conçus pour ça : pas de photo structurée, pas de lieu, pas de statut « récupéré », pas de matching.</p>
+
+    <h2>B. Présentation de la solution</h2>
+    <p><strong>Récup’</strong> est un tableau numérique du campus. En 30 secondes, un étudiant peut signaler un objet <em>trouvé</em>, publier un objet <em>perdu</em>, ou proposer / demander un <em>prêt</em>.</p>
+    <p>Chaque annonce a une catégorie, un lieu, une heure et un statut. Le propriétaire reconnaît son objet, contacte le trouveur, fixe un point de RDV sur le campus, puis clôture l’annonce. Le tableau reste propre. Le prêt suit la même logique : on voit ce qui est disponible <em>maintenant</em>, près de soi.</p>
+    <div class="box">
+      <p><strong>Avantages</strong></p>
+      <ul>
+        <li><strong>Rapide</strong> — publier prend moins de temps qu’un message WhatsApp.</li>
+        <li><strong>Lisible</strong> — des cartes visuelles, pas un fil de 200 messages.</li>
+        <li><strong>Utile deux fois</strong> — objets trouvés et entraide (prêts).</li>
+        <li><strong>Fermé proprement</strong> — « récupéré / rendu » évite les fausses pistes.</li>
+        <li><strong>Ancré campus</strong> — lieux réels, RDV entre étudiants.</li>
+      </ul>
+    </div>
+
+    <h2>C. Fonctionnalités principales</h2>
+    <ol>
+      <li><strong>J’ai trouvé</strong> — catégorie, lieu, courte note. L’objet apparaît dans le fil Trouvé.</li>
+      <li><strong>J’ai perdu</strong> — description + lieu approximatif. La recherche est visible, plus noyée dans un groupe.</li>
+      <li><strong>Je prête / j’emprunte</strong> — « Calculatrice dispo jusqu’à 18h, Amphi B ».</li>
+      <li><strong>C’est à moi</strong> — proposition de RDV sur le campus (BU, cafet, hall).</li>
+      <li><strong>C’est récupéré / rendu</strong> — l’annonce est clôturée. Le feed reste fiable.</li>
+    </ol>
+
+    <h2>D. Public cible</h2>
+    <p><strong>Primaire :</strong> étudiants du campus, tous niveaux, au quotidien.</p>
+    <p><strong>Secondaire :</strong> délégués, accueil, scolarité, qui peuvent y déposer les objets trouvés « officiels ».</p>
+    <p>Persona : <em>Lina, 20 ans, 2e année</em>. Elle a perdu son badge entre l’amphi et la cafet. Elle ouvre Récup’, voit une photo postée il y a 12 minutes par Karim, clique « C’est à moi », RDV à la BU.</p>
+
+    <h2>E. Présentation du prototype</h2>
+    <p>Le prototype est une mini-application web cliquable. Les captures ci-dessous suivent le parcours de Lina et Karim.</p>
+    <div class="shots">
+      <figure>
+        <img src="captures/01-accueil.png" alt="Accueil Récup’" />
+        <figcaption>Écran 1 — Accueil. Lina comprend le produit en une seconde : trois gestes, et les objets près d’elle.</figcaption>
+      </figure>
+      <figure>
+        <img src="captures/02-annonces.png" alt="Fil des annonces" />
+        <figcaption>Écran 2 — Fil Trouvé. Des cartes visuelles : photo, lieu, heure. On scanne, on ne lit pas un roman.</figcaption>
+      </figure>
+      <figure>
+        <img src="captures/03-publier.png" alt="Publier un objet trouvé" />
+        <figcaption>Écran 3 — Karim publie le badge trouvé à la cafet. Quatre champs, trente secondes.</figcaption>
+      </figure>
+      <figure>
+        <img src="captures/04-fiche.png" alt="Fiche badge étudiant" />
+        <figcaption>Écran 4 — Fiche objet. Lina reconnaît son badge et clique « C’est à moi ».</figcaption>
+      </figure>
+      <figure>
+        <img src="captures/05-rdv.png" alt="Fixer un rendez-vous" />
+        <figcaption>Écran 5 — RDV campus. Lieu + heure. Pas besoin d’un chat complexe pour le prototype.</figcaption>
+      </figure>
+      <figure>
+        <img src="captures/06-recupere.png" alt="Annonce clôturée" />
+        <figcaption>Écran 6 — C’est récupéré. L’annonce est clôturée, le tableau reste propre.</figcaption>
+      </figure>
+    </div>
+
+    <h2>F. Liens complémentaires</h2>
+    <ul>
+      <li>Prototype (fichier local) : <code>prototype/index.html</code></li>
+      <li>Présentation PowerPoint : <code>livrables/Recup-presentation.pptx</code></li>
+      <li>Présentation HTML (flèches clavier) : <code>livrables/presentation.html</code></li>
+      <li>Lien de démonstration en ligne : <em>à coller ici si vous hébergez le proto (GitHub Pages, Netlify…)</em></li>
+      <li>Dépôt GitHub : <em>à coller ici si disponible</em></li>
+    </ul>
+    <p class="meta">Les liens sont un complément. Les captures ci-dessus sont le livrable visuel obligatoire.</p>
+  </div>
+</body>
+</html>

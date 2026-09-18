@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Récup’ — présentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#171310; --paper:#f1eadc; --brick:#c43c28; --moss:#2b5c48; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html, body { height:100%; background:#0f0d0b; color:var(--ink); font-family:Outfit,sans-serif; }
+    .deck { height:100%; }
+    .slide {
+      display:none; height:100%; padding:7vh 8vw;
+      background: radial-gradient(900px 420px at 0% 0%, #f7d9b8, transparent 55%), var(--paper);
+    }
+    .slide.on { display:flex; flex-direction:column; justify-content:center; }
+    .kicker { color:var(--brick); letter-spacing:.16em; text-transform:uppercase; font-size:14px; font-weight:700; margin-bottom:18px; }
+    h1, h2 { font-family:Fraunces,Georgia,serif; }
+    h1 { font-size:clamp(48px, 8vw, 96px); line-height:.9; }
+    h2 { font-size:clamp(32px, 5vw, 64px); line-height:1.05; margin-bottom:24px; }
+    p, li { font-size:clamp(18px, 2.2vw, 28px); line-height:1.35; max-width:18em; }
+    .row { display:flex; gap:14px; flex-wrap:wrap; margin-top:28px; }
+    .pill { background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:999px; font-weight:650; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-top:12px; }
+    .card { background:#fffaf2; border-radius:20px; padding:20px; }
+    .card strong { display:block; font-size:22px; margin-bottom:6px; }
+    .card span { color:#6b6258; }
+    .footer { position:fixed; bottom:18px; right:24px; color:#6b6258; font-size:14px; }
+    .tiny { color:#6b6258; margin-top:20px; font-size:16px; }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck"></div>
+  <div class="footer" id="count"></div>
+  <script>
+    const slides = [
+      `<p class="kicker">ESIG Tech Arena 2026 · Mini-challenge · EQUIPE_7</p>
+       <h1>Récup’</h1>
+       <p style="margin-top:20px">Le tableau du campus pour retrouver ce que tu as perdu, et emprunter ce qu’il te manque.</p>
+       <div class="row"><span class="pill">EQUIPE_7</span></div>
+       <p class="tiny">BAKPASSIM Pouwedeo Light · ABOLO-SEWOVI Ami Raphaëlla · KOUYAKOUTOULI Godwin Marc</p>`,
+      `<p class="kicker">Le problème</p>
+       <h2>Badge perdu. WhatsApp saturé. Objet jamais rendu.</h2>
+       <p>Aujourd’hui l’info est éclatée : groupes, bouche-à-oreille, accueil. On perd du temps, de l’argent, et beaucoup d’objets restent dans un sac.</p>`,
+      `<p class="kicker">Contexte & utilisateurs</p>
+       <h2>Trois étudiants, le même campus, zéro canal commun.</h2>
+       <div class="grid">
+         <div class="card"><strong>Lina</strong><span>A perdu son badge entre l’amphi et la cafet.</span></div>
+         <div class="card"><strong>Karim</strong><span>L’a trouvé. Ne sait pas à qui le rendre.</span></div>
+         <div class="card"><strong>Yassine</strong><span>Peut prêter sa calculatrice avant l’exam.</span></div>
+       </div>`,
+      `<p class="kicker">La solution</p>
+       <h2>Un tableau unique. Trois gestes. Trente secondes.</h2>
+       <div class="row"><span class="pill">Trouvé</span><span class="pill">Perdu</span><span class="pill">Prêt</span></div>
+       <p class="tiny">On publie, on se donne RDV sur le campus, on clôture. Le fil reste propre.</p>`,
+      `<p class="kicker">Fonctionnalités</p>
+       <div class="grid">
+         <div class="card"><strong>1. J’ai trouvé</strong><span>Photo, catégorie, lieu.</span></div>
+         <div class="card"><strong>2. J’ai perdu</strong><span>Recherche visible, pas un message noyé.</span></div>
+         <div class="card"><strong>3. Je prête</strong><span>Calculatrice, chargeur, HDMI.</span></div>
+         <div class="card"><strong>4. C’est à moi</strong><span>RDV BU, cafet, hall.</span></div>
+         <div class="card"><strong>5. Récupéré</strong><span>L’annonce se ferme.</span></div>
+       </div>`,
+      `<p class="kicker">Prototype</p>
+       <h2>Un parcours réel : du badge trouvé au RDV.</h2>
+       <p>Accueil → fiche badge cafet → « C’est à moi » → BU 14h → c’est récupéré.</p>
+       <p class="tiny">On vous montre.</p>`,
+      `<p class="kicker">Valeur & perspectives</p>
+       <h2>Moins de rachat. Moins de stress. Plus d’entraide.</h2>
+       <p>Si on est retenus : alertes de similarité, carte des lieux, dépôt accueil. Le cœur du produit est déjà là.</p>`,
+      `<p class="kicker">Conclusion</p>
+       <h1>Récup’.</h1>
+       <p style="margin-top:18px">Un problème que chacun a déjà vécu. Une solution qu’on explique en une phrase. Un proto qu’on vient de parcourir.</p>
+       <p class="tiny">Merci — on répond à vos questions.</p>`
+    ];
+    let i = 0;
+    const deck = document.getElementById("deck");
+    function show() {
+      deck.innerHTML = `<section class="slide on">${slides[i]}</section>`;
+      document.getElementById("count").textContent = `EQUIPE_7  ·  ${i+1} / ${slides.length}`;
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === " ") { i = Math.min(slides.length-1, i+1); show(); }
+      if (e.key === "ArrowLeft") { i = Math.max(0, i-1); show(); }
+    });
+    document.addEventListener("click", () => { i = Math.min(slides.length-1, i+1); show(); });
+    show();
+  </script>
+</body>
+</html>
