@@ -13,6 +13,65 @@ CAPS = HERE / "captures"
 INK = RGBColor(0x17, 0x13, 0x10)
 BRICK = RGBColor(0xC4, 0x3C, 0x28)
 MUTED = RGBColor(0x5E, 0x56, 0x4D)
+PAPER = RGBColor(0xF1, 0xEA, 0xDC)
+
+MEMBERS = [
+    "BAKPASSIM Pouwedeo Light",
+    "ABOLO-SEWOVI Ami Raphaëlla",
+    "KOUYAKOUTOULI Godwin Marc",
+]
+
+
+def set_cell_shading(cell, fill):
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    shd = OxmlElement("w:shd")
+    shd.set(qn("w:fill"), fill)
+    shd.set(qn("w:val"), "clear")
+    tcPr.append(shd)
+
+
+def add_cover(doc):
+    table = doc.add_table(rows=1, cols=1)
+    table.autofit = True
+    cell = table.cell(0, 0)
+    set_cell_shading(cell, "171310")
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_before = Pt(10)
+    p.paragraph_format.space_after = Pt(10)
+    run = p.add_run("ESIG TECH ARENA 2026  ·  MINI-CHALLENGE DE PRÉSÉLECTION")
+    set_run(run, size=11, bold=True, color=PAPER, font="Calibri")
+
+    spacer = para(doc, space_before=72, space_after=0)
+    spacer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    p = para(doc, "Document explicatif de la solution", size=14, color=MUTED, space_after=10)
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    p = para(doc, "Récup’", size=56, bold=True, font="Georgia", space_after=14)
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    p = para(
+        doc,
+        "Le tableau du campus pour retrouver ce que tu as perdu, et emprunter ce qu’il te manque.",
+        size=16,
+        space_after=36,
+    )
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    p = para(doc, "EQUIPE_7", size=20, bold=True, color=BRICK, space_after=18)
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    for name in MEMBERS:
+        p = para(doc, name, size=14, space_after=6)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    p = para(doc, "18 septembre 2026", size=12, color=MUTED, space_before=56, space_after=0)
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    doc.add_page_break()
+
 
 SHOTS = [
     ("01-accueil.png", "Écran 1 — Accueil. Lina comprend le produit en une seconde : trois gestes, et les objets près d’elle."),
@@ -57,9 +116,61 @@ def para(doc, text="", size=11, bold=False, italic=False, color=INK, space_after
     return p
 
 
-def heading(doc, text):
-    p = para(doc, text, size=18, bold=True, color=BRICK, space_before=16, space_after=8, font="Georgia")
+def heading(doc, text, level=1):
+    p = doc.add_heading(text, level=level)
+    p.paragraph_format.space_before = Pt(16 if level == 1 else 10)
+    p.paragraph_format.space_after = Pt(8)
+    for run in p.runs:
+        run.font.color.rgb = BRICK
+        run.font.name = "Georgia"
+        run.font.size = Pt(18 if level == 1 else 13)
+        run.bold = True
+        rPr = run._element.get_or_add_rPr()
+        rFonts = rPr.find(qn("w:rFonts"))
+        if rFonts is None:
+            rFonts = OxmlElement("w:rFonts")
+            rPr.append(rFonts)
+        rFonts.set(qn("w:ascii"), "Georgia")
+        rFonts.set(qn("w:hAnsi"), "Georgia")
     return p
+
+
+def add_toc(doc):
+    title = para(doc, "Table des matières", size=14, bold=True, color=BRICK, font="Georgia", space_before=8, space_after=6)
+    p = doc.add_paragraph()
+    p.paragraph_format.space_after = Pt(12)
+    run = p.add_run()
+    fld = run._r
+
+    begin = OxmlElement("w:fldChar")
+    begin.set(qn("w:fldCharType"), "begin")
+    fld.append(begin)
+
+    instr = OxmlElement("w:instrText")
+    instr.set(qn("xml:space"), "preserve")
+    instr.text = ' TOC \\o "1-2" \\h \\z \\u '
+    fld.append(instr)
+
+    separate = OxmlElement("w:fldChar")
+    separate.set(qn("w:fldCharType"), "separate")
+    fld.append(separate)
+
+    p.add_run("A. Présentation du problème")
+
+    end_run = p.add_run()
+    end = OxmlElement("w:fldChar")
+    end.set(qn("w:fldCharType"), "end")
+    end_run._r.append(end)
+    return title
+
+
+def update_fields_on_open(doc):
+    settings = doc.settings.element
+    existing = settings.find(qn("w:updateFields"))
+    if existing is None:
+        update = OxmlElement("w:updateFields")
+        update.set(qn("w:val"), "true")
+        settings.append(update)
 
 
 def mix(doc, parts, space_after=8):
@@ -70,39 +181,29 @@ def mix(doc, parts, space_after=8):
 
 
 doc = Document()
+for style_name, size in (("Heading 1", 18), ("Heading 2", 13)):
+    st = doc.styles[style_name]
+    st.font.color.rgb = BRICK
+    st.font.name = "Georgia"
+    st.font.size = Pt(size)
+    st.font.bold = True
 section = doc.sections[0]
 section.top_margin = Cm(1.8)
 section.bottom_margin = Cm(1.8)
 section.left_margin = Cm(2)
 section.right_margin = Cm(2)
 
-para(doc, "ESIG TECH ARENA 2026  ·  MINI-CHALLENGE DE PRÉSÉLECTION", size=10, bold=True, color=BRICK, space_after=4)
-para(doc, "Récup’", size=36, bold=True, font="Georgia", space_after=6)
-para(
-    doc,
-    "Le tableau du campus pour retrouver ce que tu as perdu, et emprunter ce qu’il te manque.",
-    size=14,
-    space_after=6,
-)
-para(doc, "EQUIPE_7  ·  BAKPASSIM Pouwedeo Light  ·  ABOLO-SEWOVI Ami Raphaëlla  ·  KOUYAKOUTOULI Godwin Marc", size=11, color=MUTED, space_after=2)
-para(doc, "Prototype web cliquable  ·  17 septembre 2026", size=11, color=MUTED, space_after=14)
+add_cover(doc)
+add_toc(doc)
 
 heading(doc, "A. Présentation du problème")
-mix(doc, [
-    ("Quel est le problème identifié ? ", {"bold": True, "size": 11}),
-    ("Sur un campus, les objets bougent en continu : badges, chargeurs, calculatrices, écouteurs, clés USB, vestes. Quand un étudiant perd quelque chose, il n’a pas de lieu unique pour le signaler. Il écrit dans un groupe WhatsApp, demande autour de lui, passe parfois à l’accueil… et souvent il abandonne.", {"size": 11}),
-])
-mix(doc, [
-    ("Celui qui trouve un objet est tout aussi bloqué : il ne sait pas à qui le rendre. L’objet finit dans un sac, un tiroir, ou à l’accueil sans que le propriétaire ne le sache. Le même chaos existe pour les prêts : avant un examen, on cherche une calculatrice dans la précipitation, sans savoir qui peut dépanner.", {"size": 11}),
-])
-mix(doc, [
-    ("À qui ce problème se pose-t-il ? ", {"bold": True, "size": 11}),
-    ("Aux étudiants au quotidien, surtout entre deux cours, à la BU, à la cafet, en amphi, et juste avant un partiel. L’accueil / la scolarité est concernée de façon secondaire : elle reçoit des objets sans canal simple pour les relier à leurs propriétaires.", {"size": 11}),
-])
-mix(doc, [
-    ("Pourquoi ce problème mérite-t-il une solution ? ", {"bold": True, "size": 11}),
-    ("Parce qu’il est fréquent, concret, et coûteux. Un badge à refaire, une calculatrice rachetée, des dizaines de minutes perdues à scroller un groupe, un stress inutile avant un examen. Les outils existants (WhatsApp, affichage papier, accueil) ne sont pas conçus pour ça : pas de photo structurée, pas de lieu, pas de statut « récupéré », pas de matching.", {"size": 11}),
-])
+heading(doc, "Quel est le problème identifié ?", 2)
+para(doc, "Sur un campus, les objets bougent en continu : badges, chargeurs, calculatrices, écouteurs, clés USB, vestes. Quand un étudiant perd quelque chose, il n’a pas de lieu unique pour le signaler. Il écrit dans un groupe WhatsApp, demande autour de lui, passe parfois à l’accueil… et souvent il abandonne.")
+para(doc, "Celui qui trouve un objet est tout aussi bloqué : il ne sait pas à qui le rendre. L’objet finit dans un sac, un tiroir, ou à l’accueil sans que le propriétaire ne le sache. Le même chaos existe pour les prêts : avant un examen, on cherche une calculatrice dans la précipitation, sans savoir qui peut dépanner.")
+heading(doc, "À qui ce problème se pose-t-il ?", 2)
+para(doc, "Aux étudiants au quotidien, surtout entre deux cours, à la BU, à la cafet, en amphi, et juste avant un partiel. L’accueil / la scolarité est concernée de façon secondaire : elle reçoit des objets sans canal simple pour les relier à leurs propriétaires.")
+heading(doc, "Pourquoi ce problème mérite-t-il une solution ?", 2)
+para(doc, "Parce qu’il est fréquent, concret, et coûteux. Un badge à refaire, une calculatrice rachetée, des dizaines de minutes perdues à scroller un groupe, un stress inutile avant un examen. Les outils existants (WhatsApp, affichage papier, accueil) ne sont pas conçus pour ça : pas de photo structurée, pas de lieu, pas de statut « récupéré », pas de matching.")
 
 heading(doc, "B. Présentation de la solution")
 mix(doc, [
@@ -113,7 +214,7 @@ para(
     doc,
     "Chaque annonce a une catégorie, un lieu, une heure et un statut. Le propriétaire reconnaît son objet, contacte le trouveur, fixe un point de RDV sur le campus, puis clôture l’annonce. Le tableau reste propre. Le prêt suit la même logique : on voit ce qui est disponible maintenant, près de soi.",
 )
-para(doc, "Avantages", size=12, bold=True, space_after=4)
+heading(doc, "Avantages", 2)
 for item in [
     ("Rapide", "publier prend moins de temps qu’un message WhatsApp."),
     ("Lisible", "des cartes visuelles, pas un fil de 200 messages."),
@@ -192,5 +293,12 @@ para(
     space_before=8,
 )
 
-doc.save(OUT)
-print(OUT)
+update_fields_on_open(doc)
+try:
+    doc.save(OUT)
+    print(OUT)
+except PermissionError:
+    alt = HERE / "document-explicatif-EQUIPE_7.docx"
+    doc.save(alt)
+    print(f"LOCKED {OUT}")
+    print(alt)
